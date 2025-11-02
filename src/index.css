@@ -12,6 +12,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 button, input, textarea, select {
@@ -120,4 +123,32 @@ select {
   margin-left: 5px;
   background-color: #ffffff;
   color: black;
+}
+
+/* landing header */
+.landing-header {
+text-align: center;
+font-size: 3.5rem;
+line-height: 1.2;
+padding: 1.5rem 1rem 0.2rem;
+margin: 0 auto;
+color: #082c1b;
+font-weight: 700;
+letter-spacing: -2.5px;
+background: linear-gradient(45deg, #082c1b, #0dc566);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

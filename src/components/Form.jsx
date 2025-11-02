@@ -3,7 +3,7 @@ import supabase from "../supabase-client";
 
 
 function Form({ metrics }) {
-  const [error, submiAction, isPending] = useActionState(
+  const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
       // Action Logic
       const newDeal = {
@@ -40,7 +40,7 @@ function Form({ metrics }) {
   return (
     <div className="add-form-container">
       <form
-        action={submiAction}
+        action={submitAction}
         aria-label="Add new sales deal"
         aria-describedby="form-description"
       >

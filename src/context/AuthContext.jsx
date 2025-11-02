@@ -55,6 +55,31 @@ export const AuthContextProvider = ({ children }) => {
     getInitialSession()
   }, []);
 
+
+  const signInUser = async (email, password) =>{
+    try{
+      // supabase method
+        const {data, error}= await supabase.auth.signInWithPassword({
+          email: email.toLowerCase(),
+          password: password,
+        })
+      // handle supabase error explicitly 
+
+      if(error){
+        console.log('Supabase sign-in error: ', error.message);
+        return {success: false, error: error.message}; 
+      }
+
+      // success
+      console.log('Supabase sign-in success:', data);
+      return {success: true, data}
+    }catch(error){
+      // unexpected error
+      console.error('Unexpected error during sign-in:', error.message);
+      return {success: false, error: 'An unexpected error occured please try again'}
+    }
+  }
+
   // Return the Provider component that wraps all children
   // The Provider makes the 'value' prop available to all descendant components
   return (
@@ -62,7 +87,7 @@ export const AuthContextProvider = ({ children }) => {
     // value={{ session }} creates an object with the session state
     // GOTCHA: setSession is NOT included in the value, so child components can't update session
     // You probably want to include setSession here too!
-    <AuthContext.Provider value={{ session }}>
+    <AuthContext.Provider value={{ session, signInUser }}>
       {/* Render all child components passed to this provider */}
       {/* TYPO: 'childern' should be 'children' */}
       {children}

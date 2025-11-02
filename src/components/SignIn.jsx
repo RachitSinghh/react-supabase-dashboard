@@ -1,47 +1,35 @@
 import { useActionState } from "react";
 import supabase from "../supabase-client";
-
+import { useAuth } from "../context/AuthContext";
 
 const Signin = () => {
+  const { signInUser } = useAuth()
 
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
       // Action Logic
-      const user = {
-        email: formData.get("email"),
-        password: formData.get("password"),
-      };
 
-      console.log(user);
+      const email = formData.get("email");
+      const password = formData.get("password");
 
-      // Async operation
-      const { error } = await supabase.auth.signInWithPassword(user);
+      const {
+        success, 
+        data, 
+        error: signInError
+      } = await signInUser(email, password)
 
-
-      if(error){
-        console.log("Error signing in:", error);
-        return new Error("Failed to sign in. Please check your credentials");
+      if (signInError) {
+        return new Error(signInError);
       }
 
-      // return error statrn
+      if (success && data?.session) {
+        return null;
+      }
       return null;
     },
     null // InitalState
   );
 
-  /**
-  Challenge:
-  * 1) Import the 'useActionState' hook
-  * 2) Call the hook at the top level of the component, destructuring three values:
-         - 'error' (state for error handling)
-         - 'submitAction' (the form action function)
-         - 'isPending' (loading state boolean)
-  * 3) Pass two arguments to useActionState:
-        - First argument: an async arrow function with 2 parameters
-        - Second argument: initial state value of null
-  * 4) Inside the async function, extract the email and password into variables
-  * 5) Add the 'sumbmitAction' to your form's action prop
-  */
   return (
     <>
       <h1 className="landing-header">Paper Like A Boss</h1>
@@ -58,8 +46,7 @@ const Signin = () => {
 
           <h2 className="form-title">Sign in</h2>
           <p>
-            Don't have an account yet?{' '}
-            {/*<Link className="form-link">*/}
+            Don't have an account yet? {/*<Link className="form-link">*/}
             Sign up
             {/*</Link>*/}
           </p>
@@ -74,7 +61,7 @@ const Signin = () => {
             required
             aria-required="true"
             aria-invalid={error ? "true" : "false"}
-            aria-describedby="email-hint"
+            aria-describedby={error ? "signin-error" : undefined}
             disabled={isPending}
           />
 
@@ -88,18 +75,18 @@ const Signin = () => {
             required
             aria-required="true"
             aria-invalid={error ? "true" : "false"}
-            aria-describedby="passowrd-hint"
+            aria-describedby={error ? "signin-error" : undefined}
             disabled={isPending}
           />
 
           <button
             type="submit"
             className="form-button"
-          //className=
-          //aria-busy=
+            //className=
+            //aria-busy=
           >
             {/*'Signing in...' when pending*/}
-            {isPending ? 'Signing in...' : 'Sign In'}
+            {isPending ? "Signing in..." : "Sign In"}
           </button>
 
           {/* Error message */}

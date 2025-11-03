@@ -70,6 +70,31 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  // sign out.
+  const signOut = async () => {
+    try {
+      // supabase method
+      const { error } = await supabase.auth.signOut();
+      // handle supabase error explicitly
+
+      if (error) {
+        console.log("Supabase sign-out error: ", error.message);
+        return { success: false, error: error.message };
+      }
+
+      // success
+      return { success: true};
+    } catch (error) {
+      // unexpected error
+      console.error("Unexpected error during sign-out:", error.message);
+      return {
+        success: false,
+        error: "An unexpected error occured please try again",
+      };
+    }
+  };
+  
+
   // Return the Provider component that wraps all children
   // The Provider makes the 'value' prop available to all descendant components
   return (
@@ -77,7 +102,7 @@ export const AuthContextProvider = ({ children }) => {
     // value={{ session }} creates an object with the session state
     // GOTCHA: setSession is NOT included in the value, so child components can't update session
     // You probably want to include setSession here too!
-    <AuthContext.Provider value={{ session, signInUser }}>
+    <AuthContext.Provider value={{ session, signInUser, signOut }}>
       {/* Render all child components passed to this provider */}
       {/* TYPO: 'childern' should be 'children' */}
       {children}

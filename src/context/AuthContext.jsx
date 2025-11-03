@@ -21,17 +21,6 @@ export const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     async function getInitialSession() {
-      //   const {
-      //     data: { session },
-      //     error,
-      //   } = await supabase.auth.getSession();
-
-      //   if(error){
-      //     console.error("Error getting session:", error)
-      //     return;
-      //   }
-
-      //   getInitialSession();
       try {
         const { data, error } = await supabase.auth.getSession();
         if (error) {
@@ -46,39 +35,40 @@ export const AuthContextProvider = ({ children }) => {
 
     // listen for changes in auth state(.onAuthStateChange())
 
-    supabase.auth.onAuthStateChange((_event, session) =>{
-        setSession(session); 
-        console.log('Session changed: ', session)
-    })
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      console.log("Session changed: ", session);
+    });
 
-
-    getInitialSession()
+    getInitialSession();
   }, []);
 
-
-  const signInUser = async (email, password) =>{
-    try{
+  const signInUser = async (email, password) => {
+    try {
       // supabase method
-        const {data, error}= await supabase.auth.signInWithPassword({
-          email: email.toLowerCase(),
-          password: password,
-        })
-      // handle supabase error explicitly 
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase(),
+        password: password,
+      });
+      // handle supabase error explicitly
 
-      if(error){
-        console.log('Supabase sign-in error: ', error.message);
-        return {success: false, error: error.message}; 
+      if (error) {
+        console.log("Supabase sign-in error: ", error.message);
+        return { success: false, error: error.message };
       }
 
       // success
-      console.log('Supabase sign-in success:', data);
-      return {success: true, data}
-    }catch(error){
+      console.log("Supabase sign-in success:", data);
+      return { success: true, data };
+    } catch (error) {
       // unexpected error
-      console.error('Unexpected error during sign-in:', error.message);
-      return {success: false, error: 'An unexpected error occured please try again'}
+      console.error("Unexpected error during sign-in:", error.message);
+      return {
+        success: false,
+        error: "An unexpected error occured please try again",
+      };
     }
-  }
+  };
 
   // Return the Provider component that wraps all children
   // The Provider makes the 'value' prop available to all descendant components

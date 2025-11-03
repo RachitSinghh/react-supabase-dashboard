@@ -1,9 +1,11 @@
 import { useActionState } from "react";
 import supabase from "../supabase-client";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
 
 const Signin = () => {
-  const { signInUser } = useAuth()
+  const { signInUser } = useAuth();
+  const navigate = useNavigate();
 
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
@@ -13,16 +15,18 @@ const Signin = () => {
       const password = formData.get("password");
 
       const {
-        success, 
-        data, 
-        error: signInError
-      } = await signInUser(email, password)
+        success,
+        data,
+        error: signInError,
+      } = await signInUser(email, password);
 
       if (signInError) {
         return new Error(signInError);
       }
 
       if (success && data?.session) {
+        // navigate to /dashboard
+        navigate("/dashboard");
         return null;
       }
       return null;
@@ -47,7 +51,7 @@ const Signin = () => {
           <h2 className="form-title">Sign in</h2>
           <p>
             Don't have an account yet? {/*<Link className="form-link">*/}
-            Sign up
+            <Link className="form-link" to="/signup">Sign up</Link>
             {/*</Link>*/}
           </p>
 

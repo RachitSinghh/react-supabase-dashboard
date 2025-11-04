@@ -13,7 +13,7 @@ function Header() {
     const { success, error } = await signOut();
     if (success) {
       // navigate to "/"
-      navigate("/");
+      navigate("/signin");
     } else {
       setError(error.message);
     }

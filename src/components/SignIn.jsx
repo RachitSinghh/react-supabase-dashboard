@@ -1,5 +1,4 @@
 import { useActionState } from "react";
-import supabase from "../supabase-client";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -50,9 +49,10 @@ const Signin = () => {
 
           <h2 className="form-title">Sign in</h2>
           <p>
-            Don't have an account yet? {/*<Link className="form-link">*/}
-            <Link className="form-link" to="/signup">Sign up</Link>
-            {/*</Link>*/}
+            Don't have an account yet?
+            <Link className="form-link" to="/signup">
+              Sign up
+            </Link>
           </p>
 
           <label htmlFor="email">Email</label>
@@ -85,17 +85,19 @@ const Signin = () => {
 
           <button
             type="submit"
+            disabled={isPending}
             className="form-button"
-            //className=
-            //aria-busy=
+            aria-busy={isPending}
           >
-            {/*'Signing in...' when pending*/}
             {isPending ? "Signing in..." : "Sign In"}
           </button>
 
-          {/* Error message */}
           {error && (
-            <div role="alert" className="error-message">
+            <div
+              id="signin-error"
+              role="alert"
+              className="sign-form-error-message"
+            >
               {error.message}
             </div>
           )}

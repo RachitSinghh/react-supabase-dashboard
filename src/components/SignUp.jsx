@@ -1,26 +1,34 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useActionState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const SignUp = () => {
+const Signup = () => {
   const { signUpNewUser } = useAuth();
   const navigate = useNavigate();
 
+  /**
+  Challenge:
+  * 1) Extract the name and account-type from the form into variables
+  * 2) Pass these extracted values as additional arguments to the 'signUpNewUser'
+      function
+  */
+
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
+      const name = formData.get("name");
       const email = formData.get("email");
       const password = formData.get("password");
-
+      const accountType = formData.get("account-type");
       const {
         success,
         data,
         error: signUpError,
-      } = await signUpNewUser(email, password);
+      } = await signUpNewUser(email, password, name, accountType);
 
       if (signUpError) {
         return new Error(signUpError);
       }
-
       if (success && data?.session) {
         navigate("/dashboard");
         return null;
@@ -47,10 +55,24 @@ const SignUp = () => {
           <h2 className="form-title">Sign up today!</h2>
           <p>
             Already have an account?{" "}
-            <Link className="form-link" to="/">
-              Sign In
+            <Link className="form-link" to="/signin">
+              Sign in
             </Link>
           </p>
+
+          <label htmlFor="name">Name</label>
+          <input
+            className="form-input"
+            type="text"
+            name="name"
+            id="name"
+            placeholder=""
+            required
+            aria-required="true"
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={error ? "signup-error" : undefined}
+            disabled={isPending}
+          />
 
           <label htmlFor="email">Email</label>
           <input
@@ -80,21 +102,43 @@ const SignUp = () => {
             disabled={isPending}
           />
 
+          <fieldset
+            className="form-fieldset"
+            aria-required="true"
+            aria-label="Select your role"
+          >
+            <legend>Select your role</legend>
+            <div className="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  name="account-type"
+                  value="admin"
+                  required
+                />{" "}
+                Admin
+              </label>
+              <label>
+                <input type="radio" name="account-type" value="rep" required />{" "}
+                Sales Rep
+              </label>
+            </div>
+          </fieldset>
+
           <button
             type="submit"
-            disabled={isPending}
             className="form-button"
+            disabled={isPending}
             aria-busy={isPending}
           >
             {isPending ? "Signing up..." : "Sign Up"}
           </button>
 
-          {/* Error message */}
           {error && (
             <div
+              id="signup-error"
               role="alert"
               className="sign-form-error-message"
-              aria-describedby={error ? "signup-error" : undefined}
             >
               {error.message}
             </div>
@@ -105,4 +149,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Signup;
